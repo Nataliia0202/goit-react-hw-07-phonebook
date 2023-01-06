@@ -1,20 +1,23 @@
-
-import { ContactListStyle, ContactItem, ButtonForDelete } from 'components/ContactList/ContactList.styled';
+import {
+  ContactListStyle,
+  ContactItem,
+  ButtonForDelete,
+} from 'components/ContactList/ContactList.styled';
 
 import { ReactComponent as DeletIcon } from '../Icon/remove-user.svg';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { getContacts, getFilter } from 'redux/selector';
-import { deleteContact } from 'redux/slice';
+import { deleteContact } from 'redux/operations';
 
-
-export const ContactList = () => { 
+export const ContactList = () => {
   const dispatch = useDispatch();
   const contacts = useSelector(getContacts);
   const filter = useSelector(getFilter).toLowerCase();
 
-const doFiltering = () => contacts.filter(contact => contact.name.toLowerCase().includes(filter));
-const filteredContacts = doFiltering();
+  const doFiltering = () =>
+    contacts.filter(contact => contact.name.toLowerCase().includes(filter));
+  const filteredContacts = doFiltering();
 
   return (
     <div>
@@ -33,5 +36,4 @@ const filteredContacts = doFiltering();
       </ContactListStyle>
     </div>
   );
-}
-
+};

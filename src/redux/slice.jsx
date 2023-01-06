@@ -1,40 +1,73 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
 
-const phonebookSlice = createSlice({
-  name: 'contacts',
-  initialState: {
-    items: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
-    filter: '',
-  },
-  reducers: {
-    addNewContact(state, action) {
-      state.items.splice(0, 0, action.payload);
-    },
-    deleteContact(state, action) {
-      const index = state.items.findIndex(
-        contacts => contacts.id === action.payload
-      );
-      state.items.splice(index, 1);
-    },
-    setFilter(state, action) {
-      state.filter = action.payload;
-    },
-  },
-});
+import { fetchContacts, addNewContact, deleteContact } from './operations';
 
-export const { addNewContact, deleteContact, setFilter } = phonebookSlice.actions;
-const phonebookReducer = phonebookSlice.reducer;
 
-const persistConfig = {
-  key: 'contacts',
-  storage,
+const handleRequest = (state) => {
+    state.isLoading = true;
 };
 
-export const persistedReducer = persistReducer(persistConfig, phonebookReducer);
+const handleSuccess = (state) => {
+    state.isLoading = false;
+    state.error = null;
+};
+
+const handleError = (state, action) => {
+    state.isLoading = false;
+    state.error = action.payload;
+};
+
+
+
+
+const phonebookSlice = createSlice({
+    name: "contacts",
+    initialState: {
+        items: [],
+        isLoading: false,
+        error: null,
+        filter: '',
+    },
+    reducers: {
+        setFilter(state, action) {
+            state.filter = action.payload;
+        },
+    },
+
+    extraReducers: {
+        [fetchContacts.pending](state) {
+            handleRequest(state);
+        },
+        [fetchContacts.fulfilled](state, action) {
+            state.items = action.payload;
+            handleSuccess(state, action);
+        },
+        [fetchContacts.rejected](state, action) {
+            handleError(state, action);
+        },
+        [addNewContact.pending](state) {
+            handleRequest(state);
+        },
+        [addNewContact.fulfilled](state, action) {
+            state.items.push(action.payload);
+            handleSuccess(state, action);
+        },
+        [addNewContact.rejected](state, action) {
+            handleError(state, action);
+        },
+        [deleteContact.pending](state) {
+            handleRequest(state);
+        },
+        [deleteContact.fulfilled](state, action) {
+            const idx = state.items.findIndex(item => item.id === action.payload);
+            state.items.splice(idx, 1);
+            handleSuccess(state, action);
+        },
+        [deleteContact.rejected](state, action) {
+            handleError(state, action);
+        },
+    },
+});
+
+export const { setFilter } = phonebookSlice.actions;
+export const phonebookReducer = phonebookSlice.reducer;

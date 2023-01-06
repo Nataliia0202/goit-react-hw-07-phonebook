@@ -8,7 +8,7 @@ import {
 } from 'components/ContactForm/ContactForm.styled';
 import { useDispatch, useSelector } from 'react-redux';
 import { getContacts } from 'redux/selector';
-import { addNewContact } from 'redux/slice';
+import { addNewContact } from 'redux/operations';
 import shortid from 'shortid';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
