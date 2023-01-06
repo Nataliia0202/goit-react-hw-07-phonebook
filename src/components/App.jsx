@@ -10,12 +10,20 @@ import {
 import { ContactForm } from 'components/ContactForm/ContactForm';
 import { Filter } from 'components/Filter/Filter';
 import { ContactList } from 'components/ContactList/ContactList';
-import { useSelector } from 'react-redux';
-import { getContacts } from 'redux/selector';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { getContacts, getIsLoading } from 'redux/selector';
+import { useEffect } from 'react';
+import { fetchContacts } from 'redux/operations';
+import { Loading } from './Loading';
 
 export const App = () => {
+  const dispatch = useDispatch();
   const contacts = useSelector(getContacts);
+  const loading = useSelector(getIsLoading);
+
+useEffect(() => {
+  dispatch(fetchContacts());
+}, [dispatch]);
 
   return (
     <div
@@ -36,20 +44,19 @@ export const App = () => {
         <ContactForm />
       </div>
       <ContactsTitle> Contacts</ContactsTitle>
-      {contacts.length !== 0 ? (
+      {contacts.length !== 0 ? 
         <>
-          <Filter  />
-          <ContactList  />
+          <Filter />
+          {loading === true && <Loading />}
+          <ContactList />
         </>
-      ) : (
-        <WarningMessage>
-          Looks like you don`t have any contacts yet or just clear them all.
-          Please add new contact.
-        </WarningMessage>
-      )}
+       : loading === true
+            ? <Loading />
+            : <WarningMessage>Looks like you don`t have any contacts yet or just clear them all. Please add new contact🤔</WarningMessage>
+      }
 
       <GlobalStyle />
-      <ToastContainer autoClose={5000} />
+      <ToastContainer autoClose={2000} />
     </div>
   );
 };

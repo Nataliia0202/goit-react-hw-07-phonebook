@@ -41,3 +41,10 @@ export const WarningMessage = styled.p`
   font-size: 16px;
   color: #082911;
 `;
+
+export const FallingLinesStyled = {
+  color: '#082911',
+  width: '70',
+  visible: true,
+  ariaLabel: 'falling-lines-loading',
+};
