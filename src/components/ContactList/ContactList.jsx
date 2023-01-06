@@ -10,6 +10,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getContacts, getFilter } from 'redux/selector';
 import { deleteContact } from 'redux/operations';
 
+
 export const ContactList = () => {
   const dispatch = useDispatch();
   const contacts = useSelector(getContacts);
